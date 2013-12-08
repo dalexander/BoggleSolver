@@ -29,8 +29,8 @@ fromString s = foldl' update start [1..n]
 --
 -- Can just map this over the dictionary to do an inefficent search...
 --
-containsWord :: String -> Board -> Bool
-containsWord word board  =
+containsWord :: Board -> String -> Bool
+containsWord board word  =
     any (containsWordFrom word board) (nodes board)
     where
       containsWordFrom ""     _     _        = True
@@ -43,6 +43,12 @@ containsWord word board  =
                 let board' = delNode node board
                 return $ containsWordFrom ws board' node'
 
+
+allWordsSlow :: [String] -> Board -> [String]
+allWordsSlow candidates board =
+    filter (containsWord board) candidates
+
+
 --
 -- Verify that we are doing the right thing by looking at graphviz
 -- output in neato
@@ -53,23 +59,23 @@ main1 = let g      = fromString ['A' .. 'Z']
           do writeFile "/tmp/g.dot"      (graphviz' g)
              writeFile "/tmp/gMinus.dot" (graphviz' gMinus)
 
-board :: Board
-board = fromString ("REUE" ++
-                    "ALST" ++
-                    "QGSE" ++
-                    "TNIB")
-
-
+sampleBoard :: Board
+sampleBoard = fromString ("REUE" ++
+                          "ALST" ++
+                          "QGSE" ++
+                          "TNIB")
 --
 -- Try finding the words in a real board
 --
-main2 = let board = fromString ("REUE" ++
-                                "ALST" ++
-                                "QGSE" ++
-                                "TNIB")
-        in do print ""
-              print "Checking for words..."
-              print $ containsWord "NIB"  board
-              print $ containsWord "XEROX" board
+main2 = do print ""
+           print "Checking for words..."
+           print $ containsWord sampleBoard "NIB"
+           print $ containsWord sampleBoard "NIBS"
+           print $ containsWord sampleBoard "XEROX"
 
-main = main1 >> main2
+main3 = do contents <- readFile "sowpods.txt"
+           let dictionaryWords = lines contents
+           print $ allWordsSlow dictionaryWords sampleBoard
+           print $ allWordsSlow dictionaryWords sampleBoard
+
+main = main1 >> main2 >> main3
