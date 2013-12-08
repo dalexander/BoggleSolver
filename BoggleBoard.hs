@@ -1,19 +1,30 @@
 import Data.Graph.Inductive
 import Data.Graph.Inductive.Graphviz
 import Data.Maybe (fromJust)
+import Data.List (foldl')
 
 type Board = Gr Char ()
 
---
--- Can this be made more elegant?
---
-fromString :: String -> Gr Char ()
-fromString s =
-    insEdges [(i, i-1, ()) | i <- [1..16], (i `mod` 4) /= 1] $ -- LEFT
-    insEdges [(i, i+1, ()) | i <- [1..16], (i `mod` 4) /= 0] $ -- RIGHT
-    insEdges [(i, i-4, ()) | i <- [1..16], i > 4]            $ -- UP
-    insEdges [(i, i+4, ()) | i <- [1..16], i < 13]           $ -- DOWN
-    insNodes (zip [1..16] s) empty
+type Vec2 = (Int, Int)
+
+-- Infinity-norm distance
+distInf :: Vec2 -> Vec2 -> Int
+distInf (x, y) (x', y') = max (abs (x-x')) (abs (y-y'))
+
+fromString :: String -> Board
+fromString s = foldl' update start [1..n]
+    where
+      side = 4
+      n = (side * side)
+      start = (insNodes (zip [1..n] s) empty)
+      pos i = (i - 1) `divMod` side
+      update :: Board -> Int -> Board
+      update board i =
+          insEdges
+          [ (i, i', ()) | i' <- [1..n],
+            (pos i) `distInf` (pos i') <= 1,
+            i /= i' ]
+          board
 
 --
 -- Can just map this over the dictionary to do an inefficent search...
@@ -31,8 +42,6 @@ containsWord word board  =
                 node' <- neighbors board node
                 let board' = delNode node board
                 return $ containsWordFrom ws board' node'
-
-
 
 --
 -- Verify that we are doing the right thing by looking at graphviz
