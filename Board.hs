@@ -1,3 +1,5 @@
+{-# LANGUAGE BangPatterns #-}
+
 import Data.Graph.Inductive
 import Data.Graph.Inductive.Graphviz
 import Data.Maybe (fromJust)
@@ -40,7 +42,7 @@ containsWord board word  =
           | otherwise =
               any id $ do
                 node' <- neighbors board node
-                let board' = delNode node board
+                let !board' = delNode node board
                 return $ containsWordFrom ws board' node'
 
 
