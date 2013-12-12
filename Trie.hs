@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Trie
-    ( fromList,
+    ( Trie,
+      fromList,
       fromFile,
       wordsWithPrefix,
       containsWord

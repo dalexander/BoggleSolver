@@ -1,5 +1,12 @@
 {-# LANGUAGE BangPatterns #-}
 
+module Board ( Board,
+               fromString,
+               containsWord,
+               sampleBoard )
+where
+
+
 import Data.Graph.Inductive
 import Data.Graph.Inductive.Graphviz
 import Data.Maybe (fromJust)
