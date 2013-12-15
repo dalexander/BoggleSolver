@@ -1,4 +1,7 @@
 import Data.Graph.Inductive hiding (Node)
+import Control.Monad (guard)
+import Data.List (nub, sort)
+
 import Board
 import Trie
 
@@ -9,6 +12,7 @@ solveSlow candidates board =
 
 solve :: [String] -> Board -> [String]
 solve candidates board =
+    nub $ sort $
     concat [ allWordsFrom board [startLetter] startNode |
              (startNode, startLetter) <- labNodes board ]
     where
@@ -24,9 +28,8 @@ solve candidates board =
                     let letter' = label board node'
                         prefix' = prefix ++ [letter']
                         board' = delNode node board
-                    -- do cut here
+                    guard $ (not . null . wordsWithPrefix) prefix'
                     return $ allWordsFrom board' prefix' node'
-
           in thisWord ++ furtherWords
 
 
