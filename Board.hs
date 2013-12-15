@@ -1,22 +1,29 @@
 {-# LANGUAGE BangPatterns #-}
 
 module Board ( Board,
+               Node,
+               label,
                fromString,
                containsWord,
                sampleBoard )
 where
 
 
-import Data.Graph.Inductive
+import Data.Graph.Inductive hiding (Node)
 import Data.Graph.Inductive.Graphviz
 import Data.Maybe (fromJust)
 import Data.List (foldl')
 
+-- Graph representation
 type Board = Gr Char ()
+type Node = Int
 
-type Vec2 = (Int, Int)
+label :: Board -> Node -> Char
+label board node = fromJust $ lab board node
 
 -- Infinity-norm distance
+type Vec2 = (Int, Int)
+
 distInf :: Vec2 -> Vec2 -> Int
 distInf (x, y) (x', y') = max (abs (x-x')) (abs (y-y'))
 
@@ -42,20 +49,16 @@ containsWord :: Board -> String -> Bool
 containsWord board word  =
     any (containsWordFrom word board) (nodes board)
     where
-      containsWordFrom ""     _     _        = True
+      containsWordFrom ""     _     _    = True
       containsWordFrom (w:ws) board node
-          | isEmpty board                    = False
-          | (w /= fromJust (lab board node)) = False
+          | isEmpty board                = False
+          | (w /= label board node)      = False
           | otherwise =
               any id $ do
                 node' <- neighbors board node
                 let !board' = delNode node board
                 return $ containsWordFrom ws board' node'
 
-
-allWordsSlow :: [String] -> Board -> [String]
-allWordsSlow candidates board =
-    filter (containsWord board) candidates
 
 
 --
@@ -82,9 +85,4 @@ main2 = do print ""
            print $ containsWord sampleBoard "NIBS"
            print $ containsWord sampleBoard "XEROX"
 
-main3 = do contents <- readFile "sowpods.txt"
-           let dictionaryWords = lines contents
-           print $ allWordsSlow dictionaryWords sampleBoard
-           print $ allWordsSlow dictionaryWords sampleBoard
-
-main = main1 >> main2 >> main3
+main = main1 >> main2
