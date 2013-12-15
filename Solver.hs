@@ -35,5 +35,5 @@ solve candidates board =
 
 main = do contents <- readFile "sowpods.txt"
           let dictionaryWords = lines contents
-          -- print $ solveSlow dictionaryWords sampleBoard
+          --print $ solveSlow dictionaryWords sampleBoard
           print $ solve dictionaryWords sampleBoard

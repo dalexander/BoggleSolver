@@ -48,17 +48,16 @@ fromString s = foldl' update start [1..n]
 containsWord :: Board -> String -> Bool
 containsWord board word  =
     any (containsWordFrom word board) (nodes board)
-    where
-      containsWordFrom ""     _     _    = True
-      containsWordFrom (w:ws) board node
-          | isEmpty board                = False
-          | (w /= label board node)      = False
-          | otherwise =
-              any id $ do
-                node' <- neighbors board node
-                let !board' = delNode node board
-                return $ containsWordFrom ws board' node'
 
+containsWordFrom (w:ws) board node
+    | isEmpty board                = False
+    | (w /= label board node)      = False
+    | null ws                      = True
+    | otherwise =
+        any id $ do
+          node' <- suc board node
+          let !board' = delNode node board
+          return $ containsWordFrom ws board' node'
 
 
 --
@@ -84,5 +83,6 @@ main2 = do print ""
            print $ containsWord sampleBoard "NIB"
            print $ containsWord sampleBoard "NIBS"
            print $ containsWord sampleBoard "XEROX"
+           print $ containsWord sampleBoard "LEAR"
 
 main = main1 >> main2
