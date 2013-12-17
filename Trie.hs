@@ -10,11 +10,18 @@ module Trie
 
 import qualified Data.ByteString.Char8 as B
 import qualified Data.Trie as T
+import Data.List (foldl')
 
 type Trie = T.Trie ()
 
+--
+-- Data.Trie.fromList uses a foldr, giving a space leak...
+--  use a foldl' here
+--
 fromList :: [String] -> Trie
-fromList words = T.fromList [(B.pack word, ()) | word <- words]
+fromList words = trieFromList (map B.pack words)
+    where trieFromList = foldl' (\t s -> T.insert s () t) T.empty
+
 
 fromFile :: FilePath -> IO Trie
 fromFile filename = do

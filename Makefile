@@ -1,15 +1,15 @@
+# To profile:
+# ./Solver  +RTS -K32000000 -p -RTS
 
-Board: Board.hs
-	ghc -O2 Board.hs -rtsopts -prof -auto-all
+GHC := ghc -fllvm -O2 -rtsopts -prof -auto-all
+#GHC := ghc -O2 
 
-Trie: Trie.hs
-	ghc -O2 Trie.hs -rtsopts -prof -auto-all
-
-BoggleSolver: Board.hs Trie.hs Main.hs
-	ghc -O2 --make
+Solver: Board.hs Trie.hs Solver.hs
+	$(GHC) --make $^ -o Solver
 
 clean:
 	rm -f *.hi *.o
-	rm -f Board Trie Main
+	rm -f Solver
 
 .PHONY: clean
+

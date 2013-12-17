@@ -10,13 +10,12 @@ solveSlow :: [String] -> Board -> [String]
 solveSlow candidates board =
     filter (Board.containsWord board) candidates
 
-solve :: [String] -> Board -> [String]
-solve candidates board =
+solve :: Trie -> Board -> [String]
+solve trie board =
     nub $ sort $
     concat [ allWordsFrom board [startLetter] startNode |
              (startNode, startLetter) <- labNodes board ]
     where
-      trie = fromList candidates
       isWord = Trie.containsWord trie
       wordsWithPrefix = Trie.wordsWithPrefix trie
       allWordsFrom :: Board -> String -> Node -> [String]
@@ -32,8 +31,10 @@ solve candidates board =
                     return $ allWordsFrom board' prefix' node'
           in thisWord ++ furtherWords
 
-
 main = do contents <- readFile "sowpods.txt"
           let dictionaryWords = lines contents
+          let trie = Trie.fromList dictionaryWords
           --print $ solveSlow dictionaryWords sampleBoard
-          print $ solve dictionaryWords sampleBoard
+          print $ solve trie sampleBoard
+          print $ solve trie sampleBoard2
+          print $ solve trie sampleBoard3

@@ -5,9 +5,12 @@ module Board ( Board,
                label,
                fromString,
                containsWord,
-               sampleBoard )
+               sampleBoard,
+               sampleBoard1,
+               sampleBoard2,
+               sampleBoard3
+             )
 where
-
 
 import Data.Graph.Inductive hiding (Node)
 import Data.Graph.Inductive.Graphviz
@@ -70,11 +73,24 @@ main1 = let g      = fromString ['A' .. 'Z']
           do writeFile "/tmp/g.dot"      (graphviz' g)
              writeFile "/tmp/gMinus.dot" (graphviz' gMinus)
 
-sampleBoard :: Board
-sampleBoard = fromString ("REUE" ++
-                          "ALST" ++
-                          "QGSE" ++
-                          "TNIB")
+sampleBoard1, sampleBoard2, sampleBoard3 :: Board
+sampleBoard1 = fromString ("REUE" ++
+                           "ALST" ++
+                           "QGSE" ++
+                           "TNIB")
+
+sampleBoard2 = fromString ("ABCD" ++
+                           "EFGH" ++
+                           "IJKL" ++
+                           "MNOP")
+
+sampleBoard3 = fromString ("ARUG" ++
+                           "ULAS" ++
+                           "PINA" ++
+                           "CHKA")
+
+sampleBoard = sampleBoard1
+
 --
 -- Try finding the words in a real board
 --
