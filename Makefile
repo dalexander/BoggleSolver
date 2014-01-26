@@ -10,6 +10,8 @@ Solver: Board.hs Trie.hs Solver.hs
 
 install-deps:
 	cabal install bytestring-trie
+	cabal install fgl
+	cabal install QuickCheck
 
 clean:
 	rm -f *.hi *.o
