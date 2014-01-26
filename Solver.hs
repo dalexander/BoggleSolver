@@ -35,7 +35,7 @@ main = do contents <- readFile "sowpods.txt"
           let dictionaryWords = lines contents
           let trie = Trie.fromList dictionaryWords
           --print $ solveSlow dictionaryWords sampleBoard
-          --print $ solve trie sampleBoard
+          print $ solve trie sampleBoard
           replicateM_ 10 $ do
             board <- randomIO
             let soln = solve trie board
